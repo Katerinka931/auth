@@ -1,7 +1,7 @@
 package com.micro.auth.config;
 
-import com.micro.auth.jwtAuth.JwtAuthenticationFilter;
-import com.micro.auth.jwtAuth.JwtTokenUtil;
+import com.micro.auth.jwtUtils.JwtAuthenticationFilter;
+import com.micro.auth.jwtUtils.JwtTokenUtil;
 import com.micro.auth.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +15,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.NoSuchElementException;
 
@@ -40,7 +42,6 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
-
         return http.build();
     }
 
@@ -68,5 +69,15 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter();
     }
 
-
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:4200/api")
+                        .allowedMethods("*");
+            }
+        };
+    }
 }

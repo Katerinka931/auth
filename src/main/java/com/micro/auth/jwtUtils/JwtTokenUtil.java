@@ -1,8 +1,9 @@
-package com.micro.auth.jwtAuth;
+package com.micro.auth.jwtUtils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +15,12 @@ public class JwtTokenUtil {
 
     private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Authentication auth) {
         long EXPIRATION_TIME = 3600 * 1000;
         return Jwts.builder()
                 .setSubject(username)
+//                .claim("authorities", auth.getAuthorities())
+//                .claim("principal", auth.getPrincipal())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SECRET_KEY)
