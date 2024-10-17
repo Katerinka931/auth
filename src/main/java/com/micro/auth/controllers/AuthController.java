@@ -8,7 +8,6 @@ import com.micro.auth.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,20 +47,21 @@ public class AuthController {
             String role = String.valueOf(userService.findByUsername(authRequest.getUsername()).getRole());
             String token = jwtTokenUtil.generateToken(authRequest.getUsername(), auth);
 
-            return ResponseEntity.ok(new AuthResponse(token, authRequest.getUsername(), role));
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неверные логин и/или пароль");
+            return new ResponseEntity<>(new AuthResponse(token, authRequest.getUsername(), role), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Неверные логин и/или пароль", HttpStatus.UNAUTHORIZED);
         }
     }
 
 
-    @PostMapping("/validate_token")
-    public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
+    @PostMapping("/validate")
+    public ResponseEntity<String> validate(@RequestHeader("Authorization") String token) { //@RequestHeader("Authorization")
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return ResponseEntity.ok("Токен действителен, пользователь: " + authentication.getName());
+        if (authentication != null && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getName())) {
+            return new ResponseEntity<>("Токен действителен, пользователь: " + authentication.getName(), HttpStatus.OK);
         } else {
-            return ResponseEntity.status(401).body("Токен недействителен");
+            return new ResponseEntity<>("Токен недействителен", HttpStatus.BAD_REQUEST);
         }
     }
 }
