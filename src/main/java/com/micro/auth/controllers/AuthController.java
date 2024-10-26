@@ -56,6 +56,7 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()
                 && !"anonymousUser".equals(authentication.getName())) {
+            token = token.substring(7);
             return new AuthResponse(userService.getUsernameFromToken(token),
                     userService.getRoleFromToken(token), "");
         } else {
