@@ -41,11 +41,6 @@
             <version>0.11.5</version> <!-- Или более новая версия -->
         </dependency>
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version> <!-- Или более новая версия -->
-        </dependency>
-        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
             <version>6.0.2</version>
@@ -53,7 +48,7 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version> <!-- Или более новая версия -->
+            <version>0.11.5</version>
         </dependency>
 
         <dependency>
